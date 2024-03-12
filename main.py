@@ -18,8 +18,8 @@ async def main():
 
 		hashprice = await extract.pg(query.hashprice)
 		sg_hashrate = await extract.pg(query.sg_hashrate)
-		sg_hashrate_tag = "BTC_SiteHashrate"
-		hashprice_tag = "BTC_Hashprice"
+		sg_hashrate_tag = "BTC_SGTotalHashRate"
+		hashprice_tag = "BTC_MiningProfitability"
 		await load.pi(f"{load.pi_host}{hashprice_tag}", hashprice, session)
 		await load.pi(f"{load.pi_host}{sg_hashrate_tag}", sg_hashrate, session)
 
