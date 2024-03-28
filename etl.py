@@ -83,7 +83,7 @@ class Loader:
         self.pg_user = os.getenv("PG_CENTRAL_USER")
         self.pg_password = os.getenv("PG_CENTRAL_PASSWORD")
 
-    async def pi(self, path, data, session):
+    async def pi(self, path, timestamp, data, session):
         try:
             async with session.get(
                 path,
@@ -93,11 +93,15 @@ class Loader:
             ) as response:
                 if response.status == 200:
                     r = await response.json()
+                    payload = {
+                    "Timestamp": timestamp,
+                    "Value": data
+                    }
                     await session.post(
                         r["Links"]["Value"],
                         auth=aiohttp.BasicAuth(self.pi_user, self.pi_password),
                         ssl=False,
-                        json={"Value": data},
+                        json=payload,
                         headers=self.pi_headers,
                     )
         except Exception as e:

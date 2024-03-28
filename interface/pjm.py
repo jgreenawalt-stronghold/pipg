@@ -19,9 +19,8 @@ parameters = urllib.parse.urlencode(
         "datetime_beginning_utc": 'CurrentHour'
     }
 )
-
+penelec_da_hrl_lmp_tag = "pjmPenelecda"
 sg_da_hrl_lmp_tag = "PJMPriceDA"
 sg_pnode_id = 50789
-
 sg_da_hrl_lmp_url = f"https://api.pjm.com/api/v1/da_hrl_lmps?pnode_id={sg_pnode_id}&{parameters}"
-
+penelec_da_hrl_lmp_url = f"https://api.pjm.com/api/v1/da_hrl_lmps?zone=PENELEC&{parameters}"
