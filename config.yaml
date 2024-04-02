@@ -1,3 +1,15 @@
+extract_tasks:
+  - name: extract_task1
+    source: pg
+    query: "SELECT * FROM table_name"
+    tag: 
+    interval: 10
+  - name: extract_task2
+    source: pg
+    query: "SELECT * FROM another_table"
+    tag:
+    interval: 5
+
 load_tasks:
   - name: load_task1
     destination: pi
@@ -8,12 +20,3 @@ load_tasks:
     tag: another_tag
     interval: 5
 
-extract_tasks:
-  - name: extract_task1
-    source: pg
-    query: "SELECT * FROM table_name"
-    interval: 10
-  - name: extract_task2
-    source: pg
-    query: "SELECT * FROM another_table"
-    interval: 5
