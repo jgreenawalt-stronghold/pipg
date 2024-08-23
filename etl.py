@@ -7,6 +7,7 @@ import urllib.parse
 import urllib3
 import os
 
+
 class Extractor:
 
     def __init__(self):
@@ -67,8 +68,16 @@ class Transformer:
         pass
 
     async def pjm_da_hrl_lmps(self, data):
-        value = data[0]['total_lmp_da']
-        return value
+        return data[0]['total_lmp_da']
+
+    async def pjm_total_lmp_rt(self, data):
+        return data[0]['total_lmp_rt']
+
+    async def pjm_congestion_price_rt(self, data):
+        return data[0]['congestion_price_rt']
+
+    async def pjm_marginal_loss_price_rt(self, data):
+        return data[0]['marginal_loss_price_rt']
 
 class Loader:
 

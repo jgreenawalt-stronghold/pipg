@@ -1,7 +1,7 @@
 import aiohttp
 import asyncio
 from database import query
-from interface import pjm
+from interface import pjm, btc
 from etl import Extractor, Transformer, Loader
 from dotenv import load_dotenv
 from datetime import datetime
@@ -14,31 +14,26 @@ async def main():
 	load = Loader()
 	pi_time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 	async with aiohttp.ClientSession() as session:
-		tag = "JMLT301" # ASH SILO LEVEL INDICATION
-		columns = ["timestamp", "silo_level"]
+		# Extract jobs
+		pc_hashrate = await extract.pg(query.pc_hashrate)
+		e_pjm_rt_lmp = await extract.pjm(pjm.url['pc_lmp_rt'], pjm.headers, session)
+		e_meted_da_hrl_lmp = await extract.pjm(pjm.url['meted_da_hrl_lmp'], pjm.headers, session)
+		e_pjm_da_hrl_lmp = await extract.pjm(pjm.url['pc_da_hrl_lmp'], pjm.headers, session)
 
-		data = await extract.pi(f"{extract.pi_host}{tag}", session)
-		await load.pg("power", "sg_ash_silo", columns, data)
-
-		hashprice = await extract.pg(query.hashprice)
-		sg_hashrate = await extract.pg(query.sg_hashrate)
-		sg_foundry_jv_hashrate = await extract.pg(query.sg_foundry_jv_hashrate)
-		
-		sg_hashrate_tag = "BTC_SGTotalHashRate"
-		sg_foundry_jv_hashrate_tag = "BTC_FoundryJVHashrate"
-		hashprice_tag = "BTC_MiningProfitability"
-
-		await load.pi(f"{load.pi_host}{hashprice_tag}", pi_time, hashprice, session)
-		await load.pi(f"{load.pi_host}{sg_hashrate_tag}", pi_time, sg_hashrate, session)
-		await load.pi(f"{load.pi_host}{sg_foundry_jv_hashrate_tag}", pi_time, sg_foundry_jv_hashrate, session)
-
-		e_pjm_da_hrl_lmp = await extract.pjm(pjm.sg_da_hrl_lmp_url, pjm.headers, session)
+		# Transform jobs	
 		t_pjm_da_hrl_lmp = await transform.pjm_da_hrl_lmps(e_pjm_da_hrl_lmp)
-		await load.pi(f"{load.pi_host}{pjm.sg_da_hrl_lmp_tag}", pi_time, t_pjm_da_hrl_lmp, session)
-
-		e_penelec_da_hrl_lmp = await extract.pjm(pjm.penelec_da_hrl_lmp_url, pjm.headers, session)
-		t_penelec_da_hrl_lmp = await transform.pjm_da_hrl_lmps(e_penelec_da_hrl_lmp)
-		await load.pi(f"{load.pi_host}{pjm.penelec_da_hrl_lmp_tag}", pi_time, t_penelec_da_hrl_lmp, session)
+		t_meted_da_hrl_lmp = await transform.pjm_da_hrl_lmps(e_meted_da_hrl_lmp)
+		t_pjm_rt_lmp_total = await transform.pjm_rt_lmp(e_pjm_rt_lmp)
+		t_pjm_congestion_price_rt = await.transform.pjm_congestion_price_rt(e_pjm_rt_lmp)
+		t_pjm_marginal_loss_price_rt = await.transform.pjm_marginal_loss_price_rt(e_pjm_rt_lmp)
+		
+		# Load jobs		
+		await load.pi(f"{load.pi_host}{pjm.tag['pc_rt_lmp']}", pi_time, t_pjm_da_hrl_lmp, session)
+		await load.pi(f"{load.pi_host}{pjm.tag['pc_rt_lmp_congestion']}", pi_time, t_pjm_da_hrl_lmp, session)
+		await load.pi(f"{load.pi_host}{pjm.tag['pc_rt_lmp_marginal_loss']}", pi_time, t_pjm_da_hrl_lmp, session)
+		await load.pi(f"{load.pi_host}{pjm.tag['pc_da_hrl_lmp_tag']}", pi_time, t_pjm_da_hrl_lmp, session)
+		await load.pi(f"{load.pi_host}{pjm.tag['pc_meted_hrl_lmp']}", pi_time, t_penelec_da_hrl_lmp, session)
+		await load.pi(f"{load.pi_host}{btc.tag['pc_hashrate']}", pi_time, pc_hashrate, session)
 
 if __name__ == "__main__":
 	loop = asyncio.get_event_loop()
