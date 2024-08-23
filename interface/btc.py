@@ -1,3 +1,3 @@
 tag = {
-        pc_hashrate = "BTC_PC_Hashrate"
+    "pc_hashrate": "BTC_PC_Hashrate"
 }
