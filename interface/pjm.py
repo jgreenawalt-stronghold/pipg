@@ -30,7 +30,7 @@ tag = {
 }
 
 url = {
-        "pc_lmp_rt":f"https://api.pjm.com/api/v1/rt_unverified_fivemin_lmps?pnode_id={pc_pnode_id}&{parameters}"
-        "pc_da_hrl_lmp": f"https://api.pjm.com/api/v1/da_hrl_lmps?pnode_id={pc_pnode_id}&{parameters}"
+        "pc_lmp_rt":f"https://api.pjm.com/api/v1/rt_unverified_fivemin_lmps?pnode_id={pc_pnode_id}&{parameters}",
+        "pc_da_hrl_lmp": f"https://api.pjm.com/api/v1/da_hrl_lmps?pnode_id={pc_pnode_id}&{parameters}",
         "meted_da_hrl_lmp": f"https://api.pjm.com/api/v1/da_hrl_lmps?zone={pc_zone}&{parameters}"
 }
