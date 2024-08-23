@@ -29,10 +29,10 @@ async def main():
 		
 		# Load jobs		
 		await load.pi(f"{load.pi_host}{pjm.tag['pc_rt_lmp']}", pi_time, t_pjm_da_hrl_lmp, session)
-		await load.pi(f"{load.pi_host}{pjm.tag['pc_rt_lmp_congestion']}", pi_time, t_pjm_da_hrl_lmp, session)
-		await load.pi(f"{load.pi_host}{pjm.tag['pc_rt_lmp_marginal_loss']}", pi_time, t_pjm_da_hrl_lmp, session)
-		await load.pi(f"{load.pi_host}{pjm.tag['pc_da_hrl_lmp_tag']}", pi_time, t_pjm_da_hrl_lmp, session)
-		await load.pi(f"{load.pi_host}{pjm.tag['pc_meted_hrl_lmp']}", pi_time, t_penelec_da_hrl_lmp, session)
+		await load.pi(f"{load.pi_host}{pjm.tag['pc_rt_lmp_congestion']}", pi_time, t_pjm_congestion_price_rt, session)
+		await load.pi(f"{load.pi_host}{pjm.tag['pc_rt_lmp_marginal_loss']}", pi_time, t_pjm_marginal_loss_price_rt, session)
+		await load.pi(f"{load.pi_host}{pjm.tag['pc_da_hrl_lmp']}", pi_time, t_pjm_da_hrl_lmp, session)
+		await load.pi(f"{load.pi_host}{pjm.tag['meted_da_hrl_lmp']}", pi_time, t_meted_da_hrl_lmp, session)
 		await load.pi(f"{load.pi_host}{btc.tag['pc_hashrate']}", pi_time, pc_hashrate, session)
 
 if __name__ == "__main__":
