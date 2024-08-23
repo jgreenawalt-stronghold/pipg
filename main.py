@@ -24,8 +24,8 @@ async def main():
 		t_pjm_da_hrl_lmp = await transform.pjm_da_hrl_lmps(e_pjm_da_hrl_lmp)
 		t_meted_da_hrl_lmp = await transform.pjm_da_hrl_lmps(e_meted_da_hrl_lmp)
 		t_pjm_rt_lmp_total = await transform.pjm_rt_lmp(e_pjm_rt_lmp)
-		t_pjm_congestion_price_rt = await.transform.pjm_congestion_price_rt(e_pjm_rt_lmp)
-		t_pjm_marginal_loss_price_rt = await.transform.pjm_marginal_loss_price_rt(e_pjm_rt_lmp)
+		t_pjm_congestion_price_rt = await transform.pjm_congestion_price_rt(e_pjm_rt_lmp)
+		t_pjm_marginal_loss_price_rt = await transform.pjm_marginal_loss_price_rt(e_pjm_rt_lmp)
 		
 		# Load jobs		
 		await load.pi(f"{load.pi_host}{pjm.tag['pc_rt_lmp']}", pi_time, t_pjm_da_hrl_lmp, session)
