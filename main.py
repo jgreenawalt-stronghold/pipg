@@ -16,10 +16,11 @@ async def main():
 	async with aiohttp.ClientSession() as session:
 		# Extract jobs
 		pc_hashrate = await extract.pg(query.pc_hashrate)
+		hashprice = await extract.pg(query.hashprice)
 		e_pjm_rt_lmp = await extract.pjm(pjm.url['pc_lmp_rt'], pjm.headers, session)
 		e_meted_da_hrl_lmp = await extract.pjm(pjm.url['meted_da_hrl_lmp'], pjm.headers, session)
 		e_pjm_da_hrl_lmp = await extract.pjm(pjm.url['pc_da_hrl_lmp'], pjm.headers, session)
-
+		
 		# Transform jobs	
 		t_pjm_da_hrl_lmp = await transform.pjm_da_hrl_lmps(e_pjm_da_hrl_lmp)
 		t_meted_da_hrl_lmp = await transform.pjm_da_hrl_lmps(e_meted_da_hrl_lmp)
@@ -34,6 +35,7 @@ async def main():
 		await load.pi(f"{load.pi_host}{pjm.tag['pc_da_hrl_lmp']}", pi_time, t_pjm_da_hrl_lmp, session)
 		await load.pi(f"{load.pi_host}{pjm.tag['meted_da_hrl_lmp']}", pi_time, t_meted_da_hrl_lmp, session)
 		await load.pi(f"{load.pi_host}{btc.tag['pc_hashrate']}", pi_time, pc_hashrate, session)
+		await load.pi(f"{load.pi_host}{btc.tag['pc_hashprice']}", pi_time, hashprice, session)
 
 if __name__ == "__main__":
 	loop = asyncio.get_event_loop()

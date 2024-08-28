@@ -10,4 +10,5 @@ FROM capture.capt_pool_acct pool
 RIGHT JOIN subaccounts ON subaccounts.subaccount = pool.acct
 WHERE acct in (subaccounts.subaccount) AND timestamp >= now() - interval '10 minutes';"""
 
+hashprice = "SELECT hashpriceusd FROM capture.capt_hashprice ORDER BY timestamp DESC LIMIT 1"
 
