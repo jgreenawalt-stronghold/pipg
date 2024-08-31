@@ -11,8 +11,9 @@ import os
 class Extractor:
 
     def __init__(self):
-        
-        self.pi_headers = {"Content-type": "application/json", "X-Requested-With": "XmlHttpRequest"}
+
+        self.pi_headers = {"Content-type": "application/json",
+                           "X-Requested-With": "XmlHttpRequest"}
         self.pi_host = os.getenv("PI_HOST")
         self.pi_user = os.getenv("PI_USER")
         self.pi_password = os.getenv("PI_PASSWORD")
@@ -23,24 +24,24 @@ class Extractor:
 
     async def pi(self, path, session):
         try:
-            async with session.get(path,auth=aiohttp.BasicAuth(self.pi_user, self.pi_password),ssl=False,headers=self.pi_headers) as response:
+            async with session.get(path, auth=aiohttp.BasicAuth(self.pi_user, self.pi_password), ssl=False, headers=self.pi_headers) as response:
                 if response.status == 200:
                     r = await response.json()
-                    get_value = await (await session.get(r["Links"]["Value"],auth=aiohttp.BasicAuth(self.pi_user, self.pi_password),ssl=False,headers=self.pi_headers)).json()
+                    get_value = await (await session.get(r["Links"]["Value"], auth=aiohttp.BasicAuth(self.pi_user, self.pi_password), ssl=False, headers=self.pi_headers)).json()
                     timestamp = datetime.utcnow()
                     value = get_value["Value"]
-                    data = (timestamp, value)                
+                    data = (timestamp, value)
                     return data
-        
+
         except Exception as e:
-                    print(e)
+            print(e)
 
     async def pg(self, query):
-        pg = await asyncpg.connect (
-            host = self.pg_host,
-            database = self.pg_database,
-            user = self.pg_user,
-            password = self.pg_password,
+        pg = await asyncpg.connect(
+            host=self.pg_host,
+            database=self.pg_database,
+            user=self.pg_user,
+            password=self.pg_password,
         )
         try:
             pg_select = await pg.fetch(query)
@@ -48,7 +49,7 @@ class Extractor:
                 if isinstance(value[0], Decimal):
                     return float(value[0])
                 else:
-                    return(value[0])
+                    return (value[0])
         except (Exception, asyncpg.PostgresError) as e:
             print(e)
 
@@ -62,6 +63,7 @@ class Extractor:
             except Exception as e:
                 print(e)
             return r
+
 
 class Transformer:
     def __init__(self):
@@ -79,11 +81,13 @@ class Transformer:
     async def pjm_marginal_loss_price_rt(self, data):
         return data[0]['marginal_loss_price_rt']
 
+
 class Loader:
 
     def __init__(self):
 
-        self.pi_headers = {"Content-type": "application/json", "X-Requested-With": "XmlHttpRequest"}
+        self.pi_headers = {"Content-type": "application/json",
+                           "X-Requested-With": "XmlHttpRequest"}
         self.pi_host = os.getenv("PI_HOST")
         self.pi_user = os.getenv("PI_USER")
         self.pi_password = os.getenv("PI_PASSWORD")
@@ -103,8 +107,8 @@ class Loader:
                 if response.status == 200:
                     r = await response.json()
                     payload = {
-                    "Timestamp": timestamp,
-                    "Value": data
+                        "Timestamp": timestamp,
+                        "Value": data
                     }
                     await session.post(
                         r["Links"]["Value"],
@@ -117,16 +121,17 @@ class Loader:
             print(e)
 
     async def pg(self, schema, table, columns, data):
-        pg = await asyncpg.connect (
-            host = self.pg_host,
-            database = self.pg_database,
-            user = self.pg_user,
-            password = self.pg_password,
+        pg = await asyncpg.connect(
+            host=self.pg_host,
+            database=self.pg_database,
+            user=self.pg_user,
+            password=self.pg_password,
         )
 
         fields = ', '.join(columns)
         placeholders = ', '.join(['$' + str(i+1) for i in range(len(columns))])
-        pg_insert = f"INSERT INTO {schema}.{table} ({fields}) VALUES ({placeholders})"
+        pg_insert = f"INSERT INTO {schema}.{
+            table} ({fields}) VALUES ({placeholders})"
         try:
             await pg.execute(pg_insert, *data)
 
